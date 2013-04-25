@@ -14,27 +14,56 @@
 			url: "/JQ_BuscaPaciente.php",
 			success: function(data){
 			Resultado(data);
-			}*/
+			}
+
+				$a=0;
+				$b=0;
+				$c=0;*/
+				
 		var now =new Date();
 		$('#dpfecRe').val(new Date().toJSON().slice(0,10));
 		var hractual=now.getHours()+":"+now.getMinutes()+":00";
 		$("#hrRece").val(hractual);	
+		var matriz=new Array(fila);
+		var matrizMano=new Array(filaMano);
+		totalOrdenServio=0;
+		totaldelservicio=$("#txtTot").val();
+		var ct=0;
+		var c1=0;
+		var c2=0;
+		var a=0;
+		var b=0;
 		var flag=4;
+		var flagMano=4;
 		var total=0;
+		var totalMano=0;
 		var pos=0;
 		var desc=$("#txtParte");
 		var canti=$("#txtCanti");
+		var cantiMano=$("#txtCantiMano");
 		var cmbValue;
 		var comboTxt;
+		var cmbValueMano;
+		var comboTxtMano;
 		var tabla=[];
-		var a =[];
-		var miArray = [ [],[]];
+		var tablaMano=[];
+		var idrefa;
+		var idmanoobra;
+		var desrefa;
 		var no=0;
 		var tot=0;
+		var nomano=0;
+		var totmano=0;
 		var idempleasig;
 		var nomempleasig;
 		var idcliente;
+		var fila=0;
+		var columna=0;
+		var filaMano=0;
+		var columnaMano=0;
 
+		var w=$("#add");
+		var w2=$("#addMano");
 		var os=$('#submit').css("display");
 		var c=$('#mCliente').css("display");
 		var v=$('#mVehiculo').css("display");
@@ -92,11 +121,21 @@
 				$("#mRefacc").slideUp();
 				$("#mManoObra").slideDown();
 		});
+		
+			$('#cmbManoObra').change(function(){
+		    var selectedOption = $(this).find('option:selected');
+		    cmbValueMano = $(selectedOption).text();
+		    comboTxtMano = $(selectedOption).val();
+		    datosManoObra(comboTxtMano);
+		    w2.fadeOut(10);
+		}).change();
 
 		$('#dias').change(function(){
 		    var selectedOption = $(this).find('option:selected');
 		    cmbValue = $(selectedOption).text();
 		    comboTxt = $(selectedOption).val();
+		    datosRefacciones(cmbValue);
+		    w.fadeOut(10);
 		}).change();
 
 		$('#emple').change(function(){
@@ -111,7 +150,36 @@
 		    datosCliente(idcliente);
 		    datosVehiculo(idcliente);
 		}).change();
-		
+		 function datosManoObra(id){
+		 	$.getJSON("buscarManoObra.php",{
+				idMano:id,
+				},function(respuesta){
+					idmanoobra=respuesta[0];
+					precioManoObra=respuesta[2];
+					if(idmanoobra==null){
+						w2.fadeOut(10);					
+						}
+						else{
+						w2.fadeIn(10);							
+						}
+			}),'json';
+		 }
+
+		function datosRefacciones(nombre){
+			$.getJSON("buscarRefaccion.php",{
+				nombreRef:nombre,
+				},function(respuesta){
+					idrefa=respuesta[0];				
+					if(idrefa==null){
+						w.fadeOut(10);					
+						}
+						else{
+						w.fadeIn(10);							
+						}
+					
+			}),'json';
+		}
+
 		function datosVehiculo(id){
 			$.getJSON("buscarVehiculo.php",{
 					idCliente:id,
@@ -129,21 +197,130 @@
 			$.getJSON("buscarCliente.php",{
 					idCliente:id,
 				},function(response){
-					//var nomComple=response[0]+" "+response[1]+" "+response[2];
-					//$('#nomclienteOrden').val(nomComple);
 					$('#txtTelOrden').val(response[3]);
 					$('#txtCelOrden').val(response[4]);
 			}), 'json';
 			}
+			function totalorse(d,f,t){
+			/*console.log("\n"+"tipo o de donde viene: "+t);
+			console.log("d: "+d);
+			console.log("f: "+f);
+			console.log("c: "+ct);
+			console.log("c1: "+c1);
+			console.log("c2: "+c2);*/
+			if(t==1){
+				//console.log("\n"+"d: "+d);
+				//console.log("f: "+f);
+				a=d;
+				b=0;
+				c2=0;
+				//console.log("---\t");
+				//console.log("d: "+a);
+				//console.log("f: "+b);
+				//console.log("c: "+ct);
+				//console.log("c1: "+c1);
+				//console.log("c2: "+c2);
+				c1=a+b;
+				//console.log("c1: "+c1);
+				ct+=c1+c2;
+				//c1+=c1;
+				//console.log("ct: "+ct);
+			}else{
+				/*console.log("\n"+"d: "+d);
+				console.log("f: "+f);
+				console.log("c: "+ct);
+				console.log("c1: "+c1);
+				console.log("c2: "+c2);*/
+				b=f;
+				a=0;
+				c1=0;
+				/*console.log("\n"+"a: "+a);
+				console.log("b: "+b);
+				console.log("c: "+ct);
+				console.log("c1: "+c1);
+				console.log("c2: "+c2);
+				console.log("---\t");*/
+				c2=a+b;
+				//console.log("c2: "+c2);
+				//c2+=c2;
+				//console.log("c1.2: "+c2);
+				ct+=c1+c2;
+				//c1+=c1;
+				//console.log("ct: "+ct);
+			}
+			
+			}
+		$("#addMano").click(function() {
+			
+			var n = $('thead tr th', $("#mitablaMano")).length;
+ 			var tds = '<tr>';
+ 			nomano++;
+ 			totmano=precioManoObra*cantiMano.val();
+			matrizMano[filaMano]=new Array(5);		
+			matrizMano[filaMano][columnaMano]=idmanoobra;
+			columnaMano++;
+			matrizMano[filaMano][columnaMano]=cmbValue;
+			columnaMano++;			
+			matrizMano[filaMano][columnaMano]=cantiMano.val();
+			columnaMano++;
+			matrizMano[filaMano][columnaMano]=precioManoObra;
+			columnaMano++;
+			matrizMano[filaMano][columnaMano]=totmano;
+
+			columnaMano=0;
+			filaMano++;
+ 			if(nomano!=0){
+			tablaMano[pos]=nomano;
+			pos=pos+1;
+			tablaMano[pos]=cmbValueMano;
+			pos=pos+1;
+			tablaMano[pos]=cantiMano.val();
+			pos=pos+1;
+			tablaMano[pos]=precioManoObra;
+			pos=pos+1;
+			tablaMano[pos]=totmano;
+			pos++;
+ 			}
+				for(var i = 0; i < n; i++){
+					s=(tablaMano.length-n)+i;
+  					tds += '<td>'+tablaMano[s]+'</td>';
+  					
+					}
+				tds += '</tr>';
+			$("#mitablaMano").append(tds);
+				for(var q=0;q<=tablaMano.length;q++){
+			if(q==flagMano){
+				var pre=tablaMano[flagMano];	
+				totalMano=(totalMano)+(tablaMano[flagMano]);
+				flagMano+=5;
+			}else{
+				}
+
+			}
+			totalorse(tot,totmano,2);
+				$("#txtTot").val(ct);
+		});
+
+
 		$("#add").click(function() {
-			/*jQuery.each( tabla, function( index, value ) {
-  			console.log( "index", index, "value", value );
-  			animales[index]=value;
-			});*/
+			
 			var n = $('thead tr th', $("#mitabla")).length;
  			var tds = '<tr>';
  			no++;
- 			tot=comboTxt*canti.val();
+ 			tot=comboTxt*canti.val(); 			
+			matriz[fila]=new Array(5);		
+			matriz[fila][columna]=idrefa;
+			columna++;
+			matriz[fila][columna]=cmbValue;
+			columna++;			
+			matriz[fila][columna]=canti.val();
+			columna++;
+			matriz[fila][columna]=comboTxt;
+			columna++;
+			matriz[fila][columna]=tot;
+
+			columna=0;
+			fila++;
  			if(no!=0){
 			tabla[pos]=no;
 			pos=pos+1;
@@ -158,36 +335,25 @@
  			}
 				for(var i = 0; i < n; i++){
 					s=(tabla.length-n)+i;
-					
   					tds += '<td>'+tabla[s]+'</td>';
+  					
 					}
 				tds += '</tr>';
 			$("#mitabla").append(tds);
 				for(var q=0;q<=tabla.length;q++){
 			if(q==flag){
-				var pre=tabla[flag];	
+				//var pre=tabla[flag];	
 				total=(total)+(tabla[flag]);
 				flag+=5;
-				$("#txtTot").val(total);	
+				
 			}else{
 				}
 			}
+				totalorse(tot,totmano,1);
+				$("#txtTot").val(ct);
+			
 		});
 			
-				/*
-			miArray[0][pos]=no;
-			miArray[0][pos+1]=cmbValue;
-			miArray[0][pos+1]=desc.val();
-			miArray[0][pos+1]=canti.val();
-			miArray[0][pos+1]=comboTxt;
-			miArray[0][pos+1]=tot;
-			
-				 for(fila=0;fila<miArray.length;fila++){
-				for(colum=0;colum<miArray[fila].length;colum++){
-						console.log('Mi Array: '+miArray[fila][colum]+'\t');
-				}
-			}
-			*/
 			$("#btnGuardar").on('click',function(){
 			$.post("insertOrdenEnc.php",{
 					numOrde:$("#txtNumOrden").val(),
@@ -200,10 +366,57 @@
 					preDiagnos:$("#preDiagnos").val(),
 					diagnos:$("#diagnos").val(),
 					empRecibio:idempleasig,
-					totla:$("#txtTot").val()
+					total:$("#txtTot").val(),
+					idclien:idcliente
 				},function(result){
 				alert(result.trim());
 			});
+
+			for(var f=0;f<matriz.length;f++){
+				/*console.log(matriz[f][0]);
+				console.log(matriz[f][1]);
+				console.log(matriz[f][2]);
+				console.log(matriz[f][3]);
+				console.log(matriz[f][4]);*/
+				$.post("insertarOrdenServicio.php",{					
+				idordenserenc:$("#txtNumOrden").val(),
+				idrefac:matriz[f][0],
+				idMano:0,
+				cantida:matriz[f][2],
+				precio:matriz[f][3],
+				importe:matriz[f][4]
+			},function(result){
+				
+			});
+				for(var c=0;c<matriz[f].length;c++){
+					//console.log(matriz[f][c]);			
+				}
+				//alert("Se inserto Correctamente.");
+			}
+
+				//para obtener las refacciones de la orden de servicio  este es el querySELECT * FROM `ordenserviciodet` WHERE idOrdenServEnc=1 and  idRefacciones!=0
+				for(var f=0;f<matrizMano.length;f++){
+				/*console.log(matrizMano[f][0]);
+				console.log(matrizMano[f][1]);
+				console.log(matrizMano[f][2]);
+				console.log(matrizMano[f][3]);
+				console.log(matrizMano[f][4]);*/
+				$.post("insertarOrdenServicio.php",{					
+				idordenserenc:$("#txtNumOrden").val(),
+				idrefac:0,
+				idMano:matrizMano[f][0],
+				cantida:matrizMano[f][2],
+				precio:matrizMano[f][3],
+				importe:matrizMano[f][4]
+			},function(result){
+				
+			});
+				/*for(var c=0;c<matrizMano[f].length;c++){
+					console.log(matrizMano[f][c]);			
+				}*/
+				//alert("Se inserto Correctamente.");
+			}
+			alert("Se inserto Correctamente.");
 		});
 	});
 </script>
@@ -371,13 +584,44 @@
 				</table>  
 			</article>
 			<article id="mManoObra"><h1>Mano de Obra</h1>
+				<?php
+				$result=mysql_query("select*from namoobra")or die ("ERROR");
+				?>
+				
+				    <select id="cmbManoObra">
+				    	<option value="0">Selecciona...</option>
+				    		<?php
+    					while($row=mysql_fetch_array($result)){
+        					echo "<option value='".$row["idManoObra"]."'>".$row["descripcion"]."</option>";
+			  				   }
+        					 mysql_free_result($result);
+						?>
+				    </select>
+				    <label>Selecciona la cantidad</label>
+				<input type="text"  id="txtCantiMano" name="txtCanti" title="Seleciona la cantidad"/>
+				<input id="addMano" type="submit" class="button" Value="Añadir Fila"/>
+    			<table border="1" id="mitablaMano">  
+    					<thead>  
+        					<tr>  
+            					<th>No</th>  
+            					<th width="250">Nombre</th>  
+            					<th>Cantidad</th> 
+            					<th>Precio</th> 
+            					<th>Total</th> 
+        					</tr>  
+    					</thead>  
+    					<tbody>  
+        					<tr>
+        					</tr>  
+    					</tbody>  
+				</table>  
 			</article>
 		</section>
 		<section id="imporServ">
 			<article>
 				<label>Sub Total: </label>
 				<span id="txtTotal"></span>
-				<input name="numero" type="text" id="txtTot"/>
+				<input name="numero" type="text" id="txtTot" value="0"/>
 				<label>Importe iva: </label>
 				<input name="numero" type="number" />
 				<label>Total: </label>
