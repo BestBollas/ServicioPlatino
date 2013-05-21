@@ -21,21 +21,33 @@
   </tr>
   <tr>
     <td width="120" rowspan="2" valign="top">
-    <nav>
-	<ul>
-    <li><a href="menu.php">Inico</a></li>
-	<li><a href="cliente.php">Clientes</a></li>
-	<li><a href="vehiculo.php">Vehiculos</a></li>
-	<li><a href="infoFiscal.php">Información Fiscal</a></li>
-	<li><a href="gasto.php">Gasto</a></li>
-	<li><a href="empleado.php">Empleados</a></li>
-	<li><a href="proveedor.php">Proveedores</a></li>
-	<li><a href="manoObra.php">Mano Obra</a></li>
-	<li><a href="Refaccione.php">Refacciones</a></li>
-	<li><a href="Venta.php">Venta Refacciones</a></li>
-	<li><a href="ordenServicio.php">Orden de Servico</a></li>
+    
+    <nav id='cssmenu'>
+<ul>
+   <li><a href='menu.php'><span>Inicio</span></a></li>
+   <li class='has-sub'><a href='#'><span>Cliente</span></a>
+        <ul>
+            <li><a href='cliente.php'><span>Alta Cliente</span></a></li>
+            <li><a href='vehiculo.php'><span>Alta Vehiculo</span></a></li>
+            <li><a href='infoFiscal.php'><span>Informaicón Fiscal</span></a></li>
+        </ul>
+    </li>
+    <li class='has-sub'><a href='#'><span>Venta</span></a>
+        <ul>
+           <li><a href='manoObra.php'><span>Catalogo mano de Obra</span></a></li>
+           <li><a href='Refaccione.php'><span>Catalogo refacciones </span></a></li>
+           <li><a href='Venta.php'><span>Venta de Refacciones</span></a></li>
+           <li><a href='ordenServicio.php'><span>Orden Servicio</span></a></li>
+        </ul>
+    </li>
+    <li class='has-sub'><a href='#'><span>Taller</span></a>
+    <ul>
+        <li><a href='gasto.php'><span>Gastos</span></a></li>
+        <li><a href='empleado.php'><span>Empleados</span></a></li>
+        <li><a href='proveedor.php'><span>Proveedores</span></a></li>
     </ul>
-	</nav>
+</ul>
+</nav>
     </td>
     <td valign="top">
     <table cellspacing="2" cellpadding="2"><tr>
@@ -59,7 +71,7 @@
     <td>Estado</td>
   </tr>
   <?php 		  
-		  include("conexion.php");
+		  include("basedatos/conexion.php");
 conectarBD();
 
 $result=mysql_query("select * from cliente ORDER BY idCliente desc ");

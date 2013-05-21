@@ -27,7 +27,7 @@ if($usuario==''&$password=='')
 {
  $_SESSION['Aceptado']='no';
 		  ?>
-	<script>location.href="index.html?Error=Usuario no Valido";</script>
+	<script>location.href="../index.html?Error=Usuario no Valido";</script>
 			<?php
 	}
 	else
@@ -39,14 +39,14 @@ if($usuario==''&$password=='')
 	  {
 		  $_SESSION['Aceptado']='si';
 		  ?>
-				<script>location.href="menu.php";</script>
+				<script>location.href="../menu.php";</script>
            <?php
 	   }
        else
        {
 		    $_SESSION['Aceptado']='no';
 		  ?>
-	<script>location.href="index.html?Error=Usuario no Valido";</script>
+	<script>location.href="../index.html?Error=Usuario no Valido";</script>
 			<?php
        }
        

@@ -4,22 +4,17 @@
 <meta charset="utf-8"/>
 <title>Servico Platino</title>
 <link rel="stylesheet" href="css/style.css"/> 
-<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="js/jquery-1.9.0.js" type="text/javascript"></script>
+<script src="js/funciones.js" type="text/javascript"></script>
+<!--<script src="http://code.jquery.com/jquery-1.9.1.js"></script>-->
 <script>
 	$(document).on('ready',function(){	
-		/*$.ajax({
-			data: "buscador="+$('#rol').val(), 
-			type: "GET",
-			dataType: "json",
-			url: "/JQ_BuscaPaciente.php",
-			success: function(data){
-			Resultado(data);
-			}
-
-				$a=0;
-				$b=0;
-				$c=0;*/
-				
+		
+		ocultarflecha();
+		loadPage();
+		//Variables------------------------------------------------------------
+		var emailreg = /^[a-zA-Z0-9_\.\-]+@[a-zA-Z0-9\-]+\.[a-zA-Z0-9\-\.]+$/;
+		var solonumeros = /^[0-9_\.\-]+$/;
 		var now =new Date();
 		$('#dpfecRe').val(new Date().toJSON().slice(0,10));
 		var hractual=now.getHours()+":"+now.getMinutes()+":00";
@@ -61,65 +56,86 @@
 		var columna=0;
 		var filaMano=0;
 		var columnaMano=0;
-
 		var w=$("#add");
 		var w2=$("#addMano");
-		var os=$('#submit').css("display");
-		var c=$('#mCliente').css("display");
-		var v=$('#mVehiculo').css("display");
-		var obs=$('#mObser').css("display");
-		var re=$('#mRefacc').css("display");
-		var mo=$('#mManoObra').css("display");
+					function totalorse(d,f,t){
+			if(t==1){
+				a=d;
+				b=0;
+				c2=0;
+				c1=a+b;
+				ct+=c1+c2;
+			}else{
+				b=f;
+				a=0;
+				c1=0;
+				c2=a+b;
+				ct+=c1+c2;
+			}
+			
+			}
+		//--terminan las Variables----------------------------------------------
+		//funciones elementos
 
-		$('#servi').on('click',function(){
+	$('#numOrden').bind('keyup', function (e) {
+  			var key = e.keyCode || e.which;
+  			$num=$("#numOrden").val();
+  				if (key === 13) {
+    				alert("Aqui va una funcion que busca todo: "+$num);   
+  					};
+			});   
+				
+	$("#btnCance").click(function (){
+	validar();
+	//$("#servi").focus().after("<span class='error2'>Ingrese un mensaje</span>");
+	});
+	$("#txtNumOrden").keyup(function(){		
+		if( solonumeros.test($(this).val())){
+			$(".error").fadeOut();	
+			return false;
+		}		
+	});
+
+		$('#servi').on('click',function(){				
+				ocultarmenus();
 				$("#submit").slideDown();
-				$("#mCliente").slideUp();
-				$("#mVehiculo").slideUp();
-				$("#mObser").slideUp();
-				$("#mRefacc").slideUp();
-				$("#mManoObra").slideUp();
+				ocultarflecha();
+				$("#serviflecha").fadeIn();
 		});
 
 		$('#cClie').on('click',function(){	
-				$("#submit").slideUp();
+				ocultarmenus();
 				$("#mCliente").slideDown();
-				$("#mVehiculo").slideUp();
-				$("#mObser").slideUp();
-				$("#mRefacc").slideUp();
-				$("#mManoObra").slideUp();			
+				ocultarflecha();
+				$("#clieflecha").fadeIn();
+				
 		});
 		$('#cVehi').on('click',function(){
-			$("#submit").slideUp();
-				$("#mCliente").slideUp();
+				ocultarmenus();
 				$("#mVehiculo").slideDown();
-				$("#mObser").slideUp();
-				$("#mRefacc").slideUp();
-				$("#mManoObra").slideUp();
+				
+				ocultarflecha();
+				$("#vehiflecha").fadeIn();
 		});
 		$('#cObserva').on('click',function(){
-				$("#submit").slideUp();
-				$("#mCliente").slideUp();
-				$("#mVehiculo").slideUp();
+				ocultarmenus();
 				$("#mObser").slideDown();
-				$("#mRefacc").slideUp();
-				$("#mManoObra").slideUp();
-			
+				ocultarflecha();
+				$("#obserflecha").fadeIn();
 		});
 		$('#cRefa').on('click',function(){
-				$("#submit").slideUp();
-				$("#mCliente").slideUp();
-				$("#mVehiculo").slideUp();
-				$("#mObser").slideUp();
+				ocultarmenus();
 				$("#mRefacc").slideDown();
-				$("#mManoObra").slideUp();
+				ocultarflecha();
+				$("#refaflecha").fadeIn();
 		});
 		$('#cManoObra').on('click',function(){
-				$("#submit").slideUp();
-				$("#mCliente").slideUp();
-				$("#mVehiculo").slideUp();
-				$("#mObser").slideUp();
-				$("#mRefacc").slideUp();
+				ocultarmenus();
 				$("#mManoObra").slideDown();
+
+				ocultarflecha();
+				$("#manoflecha").fadeIn();
+				
 		});
 		
 			$('#cmbManoObra').change(function(){
@@ -142,7 +158,6 @@
 		    var selectedOption2 = $(this).find('option:selected');
 		    idempleasig=$(selectedOption2).val();
 			nomempleasig=$(selectedOption2).text();
-			
 		}).change();
 		$('#nomclienteOrden').change(function(){
 		    var selectedOption3 = $(this).find('option:selected');
@@ -150,106 +165,7 @@
 		    datosCliente(idcliente);
 		    datosVehiculo(idcliente);
 		}).change();
-		 function datosManoObra(id){
-		 	$.getJSON("buscarManoObra.php",{
-				idMano:id,
-				},function(respuesta){
-					idmanoobra=respuesta[0];
-					precioManoObra=respuesta[2];
-					if(idmanoobra==null){
-						w2.fadeOut(10);					
-						}
-						else{
-						w2.fadeIn(10);							
-						}
-			}),'json';
-		 }
 
-		function datosRefacciones(nombre){
-			$.getJSON("buscarRefaccion.php",{
-				nombreRef:nombre,
-				},function(respuesta){
-					idrefa=respuesta[0];				
-					if(idrefa==null){
-						w.fadeOut(10);					
-						}
-						else{
-						w.fadeIn(10);							
-						}
-					
-			}),'json';
-		}
-
-		function datosVehiculo(id){
-			$.getJSON("buscarVehiculo.php",{
-					idCliente:id,
-				},function(response){
-					$("#txtPlacaOrden").val(response[0]);
-					$("#txtMarcaOrden").val(response[1]);
-					$("#txtSubMarcaOrden").val(response[2]);
-					$("#txtModeloOrden").val(response[3]);
-					$("#txtAnioOrden").val(response[4]);
-					$("#txtColorOrden").val(response[5]);
-			}), 'json';
-		}
-
-		function datosCliente(id){
-			$.getJSON("buscarCliente.php",{
-					idCliente:id,
-				},function(response){
-					$('#txtTelOrden').val(response[3]);
-					$('#txtCelOrden').val(response[4]);
-			}), 'json';
-			}
-			function totalorse(d,f,t){
-			/*console.log("\n"+"tipo o de donde viene: "+t);
-			console.log("d: "+d);
-			console.log("f: "+f);
-			console.log("c: "+ct);
-			console.log("c1: "+c1);
-			console.log("c2: "+c2);*/
-			if(t==1){
-				//console.log("\n"+"d: "+d);
-				//console.log("f: "+f);
-				a=d;
-				b=0;
-				c2=0;
-				//console.log("---\t");
-				//console.log("d: "+a);
-				//console.log("f: "+b);
-				//console.log("c: "+ct);
-				//console.log("c1: "+c1);
-				//console.log("c2: "+c2);
-				c1=a+b;
-				//console.log("c1: "+c1);
-				ct+=c1+c2;
-				//c1+=c1;
-				//console.log("ct: "+ct);
-			}else{
-				/*console.log("\n"+"d: "+d);
-				console.log("f: "+f);
-				console.log("c: "+ct);
-				console.log("c1: "+c1);
-				console.log("c2: "+c2);*/
-				b=f;
-				a=0;
-				c1=0;
-				/*console.log("\n"+"a: "+a);
-				console.log("b: "+b);
-				console.log("c: "+ct);
-				console.log("c1: "+c1);
-				console.log("c2: "+c2);
-				console.log("---\t");*/
-				c2=a+b;
-				//console.log("c2: "+c2);
-				//c2+=c2;
-				//console.log("c1.2: "+c2);
-				ct+=c1+c2;
-				//c1+=c1;
-				//console.log("ct: "+ct);
-			}
-			
-			}
 		$("#addMano").click(function() {
 			
 			var n = $('thead tr th', $("#mitablaMano")).length;
@@ -302,7 +218,7 @@
 		});
 
 
-		$("#add").click(function() {
+				$("#add").click(function() {
 			
 			var n = $('thead tr th', $("#mitabla")).length;
  			var tds = '<tr>';
@@ -355,130 +271,99 @@
 		});
 			
 			$("#btnGuardar").on('click',function(){
-			$.post("insertOrdenEnc.php",{
-					numOrde:$("#txtNumOrden").val(),
-					fechRecep:$("#dpfecRe").val(),
-					fechEntrega:$("#dpfechEntre").val(),
-					hrRecep:hractual,
-					hrEntrega:$("#hrEntre").val(),
-					status:$("#txtestadocarro").val(),
-					empAsig:idempleasig,
-					preDiagnos:$("#preDiagnos").val(),
-					diagnos:$("#diagnos").val(),
-					empRecibio:idempleasig,
-					total:$("#txtTot").val(),
-					idclien:idcliente
-				},function(result){
-				alert(result.trim());
-			});
-
-			for(var f=0;f<matriz.length;f++){
-				/*console.log(matriz[f][0]);
-				console.log(matriz[f][1]);
-				console.log(matriz[f][2]);
-				console.log(matriz[f][3]);
-				console.log(matriz[f][4]);*/
-				$.post("insertarOrdenServicio.php",{					
-				idordenserenc:$("#txtNumOrden").val(),
-				idrefac:matriz[f][0],
-				idMano:0,
-				cantida:matriz[f][2],
-				precio:matriz[f][3],
-				importe:matriz[f][4]
-			},function(result){
-				
-			});
-				for(var c=0;c<matriz[f].length;c++){
-					//console.log(matriz[f][c]);			
-				}
-				//alert("Se inserto Correctamente.");
-			}
-
-				//para obtener las refacciones de la orden de servicio  este es el querySELECT * FROM `ordenserviciodet` WHERE idOrdenServEnc=1 and  idRefacciones!=0
-				for(var f=0;f<matrizMano.length;f++){
-				/*console.log(matrizMano[f][0]);
-				console.log(matrizMano[f][1]);
-				console.log(matrizMano[f][2]);
-				console.log(matrizMano[f][3]);
-				console.log(matrizMano[f][4]);*/
-				$.post("insertarOrdenServicio.php",{					
-				idordenserenc:$("#txtNumOrden").val(),
-				idrefac:0,
-				idMano:matrizMano[f][0],
-				cantida:matrizMano[f][2],
-				precio:matrizMano[f][3],
-				importe:matrizMano[f][4]
-			},function(result){
-				
-			});
-				/*for(var c=0;c<matrizMano[f].length;c++){
-					console.log(matrizMano[f][c]);			
-				}*/
-				//alert("Se inserto Correctamente.");
-			}
-			alert("Se inserto Correctamente.");
+		insertarOrdenEnc();
 		});
 	});
 </script>
 </head>
 <body>
 	
+			
+			
 	<header><h1>Servicio Platino</h1></header>
 	 
 	<section class="container">
-		<nav >
-			<ul>
-				<li><a href="menu.php">Inico</a></li>
-				<li><a href="vehiculo.php">Vehiculos</a></li>
-				<li><a href="cliente.php">Clientes</a></li>
-				<li><a href="infoFiscal.php">Información Fiscal</a></li>
-				<li><a href="gasto.php">Gasto</a></li>
-				<li><a href="empleado.php">Empleados</a></li>
-				<li><a href="proveedor.php">Proveedores</a></li>
-				<li><a href="manoObra.php">Mano Obra</a></li>
-				<li><a href="Refaccione.php">Refacciones</a></li>
-				<li><a href="venta.php">Venta Refacciones</a></li>
-				<li><a href="ordenServicio.php">Orden de Servico</a></li>
-			</ul>
-		</nav>
+			<nav id='cssmenu'>
+<ul>
+   <li><a href='menu.php'><span>Inicio</span></a></li>
+   <li class='has-sub'><a href='#'><span>Cliente</span></a>
+        <ul>
+            <li><a href='cliente.php'><span>Alta Cliente</span></a></li>
+            <li><a href='vehiculo.php'><span>Alta Vehiculo</span></a></li>
+            <li><a href='infoFiscal.php'><span>Informaicón Fiscal</span></a></li>
+        </ul>
+    </li>
+    <li class='has-sub'><a href='#'><span>Venta</span></a>
+        <ul>
+           <li><a href='manoObra.php'><span>Catalogo mano de Obra</span></a></li>
+           <li><a href='Refaccione.php'><span>Catalogo refacciones </span></a></li>
+           <li><a href='Venta.php'><span>Venta de Refacciones</span></a></li>
+           <li><a href='ordenServicio.php'><span>Orden Servicio</span></a></li>
+        </ul>
+    </li>
+    <li class='has-sub'><a href='#'><span>Taller</span></a>
+    <ul>
+        <li><a href='gasto.php'><span>Gastos</span></a></li>
+        <li><a href='empleado.php'><span>Empleados</span></a></li>
+        <li><a href='proveedor.php'><span>Proveedores</span></a></li>
+    </ul>
+</ul>
+</nav>
 		<section id="menuSer">
 			<article id="servi">
+				<span class='error2' id="servierror"></span>
+				<span class="flecha" id="serviflecha"></span>
 				<label>Orden servicio</label>
-				<img src="imag/icon/tools.ico" />
+				<img src="imag/icon/tools.ico"/>
 			</article>
 			<article id="cClie">
+				<span class='error2'></span>
+				<span class="flecha" id="clieflecha"></span>
 				<label>Cliente</label>
 				<img src="imag/icon/user.ico" />
+				
 			</article>
 			<article id="cVehi">
+				<span class='error2'></span>
+				<span class="flecha" id="vehiflecha"></span>
 				<label>Vehiculo</label>
 				<img src="imag/icon/home.ico" />
+				
 			</article>
 			<article id="cObserva">
+				<span class='error2'></span>
+				<span class="flecha" id="obserflecha"></span>
 				<label>Observaciones</label>
 				<img src="imag/icon/save.ico" />
+				
 			</article>
 			<article id="cRefa">
+				<span class='error2'></span>
+				<span class="flecha" id="refaflecha"></span>
 				<label>Refacciones</label>
 				<img src="imag/icon/add.ico" />
+				
 			</article>
 			<article id="cManoObra">
+				<span class='error2'></span>
+				<span class="flecha" id="manoflecha"></span>
 				<label>Mano de Obra</label>
 				<img src="imag/icon/accept.ico" />
+				
 			</article>
 		</section>
 		
 		<section id="contenidoServ">
 			<article id="buscar">
-			<form action= "#"  method="post" >
+			
 				<label for="numOrden">Numero de Servico</label>
 				<input type="search" name="numOrden" id="numOrden" results="5"/>			
-			</form>
+			
 			</article>
-
+			
 			<article id="submit">
 				
-					<input type="text"  name="Orden Servicio" placeholder="Orden Servicio"  id="txtNumOrden" />
+					<input type="text"  name="Orden Servicio" title="Orden Servicio" required id="txtNumOrden" />
 					<label>Fecha Recepcion:</label>
 					<input  name="calendario" type="date" placeholder="Fecha Recepcion" id="dpfecRe"/>
 					<label>Fecha Entrega (Aprox):</label>
@@ -492,7 +377,7 @@
     					</datalist>
     				<label>Persona Asignado:</label>
 					<?php
-				include('conexion.php');
+				include('basedatos/conexion.php');
 				conectarBD();
 				$resultado=mysql_query("select*from empleado where tipo='ayudante'")or die ("ERROR");
 				?>
@@ -616,6 +501,7 @@
     					</tbody>  
 				</table>  
 			</article>
+			
 		</section>
 		<section id="imporServ">
 			<article>
@@ -623,15 +509,16 @@
 				<span id="txtTotal"></span>
 				<input name="numero" type="text" id="txtTot" value="0"/>
 				<label>Importe iva: </label>
-				<input name="numero" type="number" />
+				<input name="numero" type="text" />
 				<label>Total: </label>
-				<input name="numero" type="number" />
+				<input name="numero" type="text" />
 			</article>
-			<article>
+			<article >
 				<input id="btnGuardar" class="button" type="submit" name="btnGuardar" Value="Guardar"/>
 				<input id="btnCance" class="button" type="submit" name="btnCance" Value="Cancelar"/>
-				<input id="btnModifi" class="button" type="submit" name="btnModifi" Value="Modificar"/>
+				<input id="btnModifi" class="button" type="submit" name="btnModifi" Value="Modificar"/> 
 			</article>
+			
 		</section>
 	</section>
 	<footer><h3>@BestBollas</h3></footer>
